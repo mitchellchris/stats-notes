@@ -1,0 +1,416 @@
+# Movie
+Bell labs - invented everything
+
+their goal was to provide an interactive system such that the people doing the 
+research could express what they wanted in a natural way, while retaining 
+access to the best computational methods available
+
+portable version of unix based on C was developed for a 32 bit machine (scientific computing -- as opposed to a 16 bit machine)
+
+rewrote S to use C and Unix (R is a modern, free, open source implementation of S)
+
+John Chambers and Trevor Hastie
+
+# Null Hypothesis
+
+Ho Null Hypothesis - No Effect:
+  Mc - Mt = 0
+  Mc = Mt
+
+  Ho: Mc - Mt = 0            # null hypothesis
+  Ha: Mc - Mt = {>, <, != 0} # alternative hypothesis
+
+# Fundamental Question of Inference
+
+Every statistical inference procedure is based on the question "How does what we observe in our data compare to what would happen if the null hypothesis were actually true and we repeated the process many times?"
+
+For a randomization test comparing responses of two groups:
+
+"How does the observed difference between groups compare to what would happen if the treatments actually had no effect on the individual responses and we repeated the random allocation of individuals to groups many times?"
+
+Type 1 error: Reject a true null hypothesis
+Type 2 error: Failure to reject a false null hypothesis
+
+Ho: mu_d.aa - mu_d.ua = 0
+Ha: mu_d.aa - mu_d.ua != 0
+
+Ho: mu_d.may - my_d.june = 0
+Ha: mu_d.may - my_d.june != 0
+
+Ho: p_d>20aa - pd>20ua = 0
+Ha: p_d>20aa - pd>20ua != 0
+
+Ho: sigma^2_aa - sigma^2_ua = 0
+Ho: sigma^2_aa - sigma^2_ua < 0
+
+Ho: mu_d.aat.35 - mu_d.uat.35 = 0
+Ho: mu_d.aat.35 - mu_d.uat.35 = 0
+
+Ho: p_d>20j - pd>20m = 0
+Ha: p_d>20j - pd>20m != 0
+
+Ho: sigma^2_m/sigma^2_j = 1
+Ho: sigma^2_m/sigma^2_j != 1
+
+
+Collection of all possible outcomes is called the Sample Space, \omega
+
+Flipping two coins (once):
+\omega = {HH, HT, TH, TT}
+
+Event = Heads => at least 1 head = F
+P(F) = (# outcomes in F) / (# outcomes in \omega) = 3/4
+0 <= P(F) <= 1
+P(\omega) = 1
+
+Mututally exclusive events:
+P(E U F) = P(E) + P(F) if E insersection F != 0
+
+P(E | F) = P(E intersection F) / P(F); P(F) > 0
+
+Independent events:
+
+E + F are said to be independent iff:
+  P(E | F) = P(E) // Probability of E given F = Probability of E
+  or
+  P(F | E) = P(F)
+
+  P(E intersection F) = P(E) * P(F)
+
+## Example:
+
+52 Cards
+ 4 Suits - Hearts, Clubs, Spades, Diamonds
+
+Hearts (H)
+FaceCard (FC)
+
+Contingency Table:
+
+      H     H^c
+
+FC    3      9    12      P(FC) = 12/52
+
+FC   10     30    40      P(FC^c) = 40/52
+
+     13     39    52
+
+P(H) = 13/52
+P(H^c) = 39/52
+
+
+P(FC) = 12/52 = 3/13
+P(FC intersection H) / P(H) = (3/52) / (13/52) = 3/13
+
+
+## Pearon's Chi-square test
+
+sum [((o - e)**2) / e | o <- observed, e <- expected]
+
+
+## Problem 10:
+
+                  Diet
+
+              Y       N
+
+Gender  W    35     146     181
+        
+        M     8      97     105
+
+             43     243     286
+
+
+P(W intersects Y) = (35/286) != P(W) * P(Y) = (101/286) * (43/286)
+
+X^2_(rows-1)(cols-1)
+
+Integral from [1,2] f(x)dx = P(1 <= x <= 2) = P(x <= 2) - P(x <= 1)
+
+p[distname] P(X <= x) //give it a quantile
+q[distname] inverse cumulative density function //give it a percentage
+d[distname] density
+r[distname] random
+
+P(x <= 2) = pchisq(2, 1)
+P(x <= 1) = pchisq(1, 1)
+P(1 <= x <= 2) = chisq(2,1) - pchisq(1,1)
+P(x >= 6.25) = 1 - chisq(6.25, 1)
+
+Paramter      Statistic
+-------       --------
+mu              y bar
+p               p hat
+\sigma^2        s^2
+\sigma          s
+
+# Expected Value
+E[X]:
+  Discrete:
+    E[X] = mu_x = sum [xi * P(X=xi)] = sum x * p(x)
+
+  Continuous:
+    E[X] = mu_x integral (-inf, inf) x * f(x) dx, f(x) is the pdf for X
+
+  For f(x) to be a valid pdf
+    1) f(x) >= 0 for all x
+    2) integral (-inf, inf) f(x) = 1 or sum p(xi) = 1
+
+# Variance
+V[X] = sigma^2_X:
+  Discrete:
+    sum from i=1 (xi - mu_x)^2 * P(X=xi)
+
+  Continuous:
+    integral (-inf, inf) (x - mu_x)^2 * f(x) dx
+
+
+Let X = # of heads in 3 flips of a coin
+
+Omega = { HHH, HHT, HTH, THH, TTH, THT, HTT, TTT }
+
+  x    |   0     1     2     3
+---------------------------------
+P(X=x) |  1/8   3/8   3/8   1/8
+
+E[X] = 0 * 1/8 + 1 * 3/8 + 2 * 3/8 + 3 * 1/8 = 12/8 = 1.5
+
+V[X] = (0 - 1.5)^2 * 1/8 + (1 - 1.5)^2 * 3/8 + (2 - 1.5)^2 * 3/8 + (3 - 1.5)^2 * 1/8
+     = 9/32 + 3/32 + 3/32 + 9/32 = 24/32 = 3/4
+
+Sigma^2 = 3/4
+Sigma = sqrt(3/4)
+
+
+Suppose X = Chris's waiting time for the bus...
+Suppose X ~ Unif(0,20)... # The waiting time is distributed uniformly across 0-20 minutes
+
+      |
+      |
+1/20  | -----------------------
+      |_|_____________________|__
+        0                     20
+
+integral (0, 20) 1/20 dx = x/20 | (0, 20) = 20/20 - 0/20 = 1
+
+E[X] = integral (-inf, inf) x * f(x) dx = integral (0, 20) x * f(x) dx
+     = integral (0, 20) (x/20) dx = x^2/40 | (0, 20)
+     = 400/40 - 0/40 = 10
+
+V[X] = Simga^2
+     = integral (0, 20) (x - 10)^2 * 1/20 dx
+     = integral (0, 20) (x^2 - 20x + 100) * 1/20 dx
+     = integral (0, 20) (x^2/20 - x + 5)  dx
+     = (x^3/60 - x^2/2 + 5x) } (0, 20)
+     = 20^3/60 - 20^2/2 + 5(20) = 33.3...
+Sigma = sqrt(33.3...) = 5.77 minutes
+
+
+10 T/F questions, just flipping a coin:
+
+dbinom(10, 10, 1/2) = 1/1024
+dbinom(10:6, 10, 1/2) = vector of stuff...
+sum(dbinom(10:6, 10, 1/2) = 386/1024
+
+
+Let X and Y be random variables
+
+E[X +- Y] = E[X] +- E[Y]
+
+If X and Y are independent
+
+V[X +- Y] = V[X] + V[Y]
+
+If a and b are real constants and X and Y are rvs, then
+E[aX +- bY] = aE[X] +- bE[Y]
+
+If X and Y are independent
+
+V[aX +- bY] = a^2V[X] + b^2V[Y]
+
+E[Xbar] = mu_xbar = mu
+V[Xbar] = sigma^2_x = sigma^2_x / n
+
+[x1, x2,...,x9] ~ N(20, 8)
+[y1, y2,...,y16] ~ N(16, 7)
+[z1, z2,...,z25] ~ N(20, 5)
+
+xbar + ybar ~ N(mu_xbar+ybar, sigma_xbar+ybar)
+xbar + ybar ~ N(mean_xbar+ybar, sd_xbar+ybar)
+
+E[xbar + ybar] = mu_xbar+ybar = E[xbar] + E[ybar] = 20 + 16 = 36
+
+V[xbar + ybar] = V[xbar] + V[ybar] 
+= sigma^2_x / n_x + sigma^2_x / n_x
+= 8^2 / 9 + 7^2 / 16 = 
+
+
+
+
+Quiz from March 26
+
+1a) W1 ~ N(0, sqrt(5))
+
+xbar - ybar = 20-20 = 0
+V[xbar - ybar] = v[xbar] + v[ybar] = 6^2 / 9 + 4^2 / 16 = 5
+
+1b) W2 ~ N(40, sqrt(85))
+
+V[3X/2 + V/2] = (3/2)^2 * V[X] + (1/2)^2 * V[Y] = 81 + 4 = 85
+
+1c) w3 ~ N(-1, sqrt(154)
+
+whatever
+
+2: W4 ~ N(100, 15)
+2a) P(W4 <= q) = 0.15 -> q = ?
+qnorm(.15, 1000, 15) = 84.4535
+
+2b) P(85 <= W4 <= 130) = ?
+pnorm(130, 100, 15) - pnorm(85, 100, 15)
+
+2c) P(70 <= W4 <= q) = 0.80 -> q = ?
+qnorm(.8 + pnorm(70, 100, 15), 100, 15)
+
+3: size = 24, a = 0, b = 12
+a) E[X] = b+a/2 = 12/2 = 6
+b) V[X] = (b-a)^2/12 / 24 = 1/2
+c) sqrt(1/2)
+d) X ~ N (6, sqrt(1/2))
+P(xbar > 7) = 1 - pnorm(7, 6, sqrt(1/2))
+
+
+
+for a continuous function:
+
+  E[X] = mean(X) = integral x * f(x) dx
+
+  Xbar = mean of some sample
+  
+  E[Xbar] = mean(Xbar)
+  
+    sample some, take the mean, do that a bunch of times, then take the mean of all those means
+    mean of sample means == mean of population = mean
+
+  V[Xbar] = Var[Xbar] = sigma_xbar^2 = sigma_x^2/n_x
+
+
+HW chapter 4:
+
+1. Pop <- c(1, 2, 5, 6, 10, 12)
+
+How many possible different samples are there?
+
+  > choose(6, 3)
+
+library(knitr)
+
+
+
+BEER STORY
+
+Z = (xbar - mu_xbar) / sigma_xbar ~ N(0, 1)
+
+xbar ~ N(mu_xbar, sigma_xbar)
+
+Z = standard normal distribution
+
+tails to left and right have area of alpha/2
+area between the tails has 1 - alpha
+
+Z_alpha/2 = Z_.025 = qnorm(.025)
+
+X ~ (100, 10)  n = 3 (reach in and grab 3 values, do this 10000 times)
+
+      x1  x2  x2  mean  z
+0     
+..
+10000
+
+distribution of the mean column is the distribution of the sample mean
+standard deviation of sample means = standard deviation of thing / sqrt(n)
+sigma_xbar = sigma_x / sqrt(n)
+
+distribution of the z column is the distribution of the
+
+```{r}
+set.seed(13)
+sims <- 10000
+n <- 4
+mean_param <- 100
+sd_param <- 10
+z <- numeric(sims)
+for (i in 1:sims) {
+  xs <- rnorm(n, mean_param, sd_param) # n values with normal with mean = 100 sd = 10
+  xbar <- mean(xs)
+  z[i] <- (xbar - mean_param) / (sd_param/sqrt(n))
+}
+
+mean(z) # should be ~~ 0
+sd(z) # should be ~~ 1
+```
+
+we don't know the standard deviation, so let's sample to figure it out
+t = (xbar - mu) / (s / sqrt(n)) ~ t_n-1
+
+Z = (xbar - mu_xbar) / sigma_xbar
+t = (xbar - mu) / (s / sqrt(n))
+
+P(z_alpha/2 <= Z <= Z_1-alpha/2) = 1 - alpha
+P(-Z_1-alpha/2 <= (xbar - u) / (sigma/sqrt(n)) <= Z_1-alpha/2 = 1 - alpha
+P(xbar - Z_1-alpha/2 * sigma/sqrt(n) <= u <= xbar + Z_1-alpha/2 * sigma/sqrt(n)) = 1 - alpha
+
+confidence interval:
+CI_1-alpha (mu) = [xbar - Z_1-alpha/2 * sigma/sqrt(n), xbar + Z_1-alpha/2 * sigma/sqrt(n)]
+
+Example -- ages in the class
+sigma = 1 year
+
+```{r}
+cz = qnorm(1 - .05/2)
+n <- 5
+sigma <- 1
+ages <- c(37, 32, 20, 21, 18)
+xbar <- mean(ages)
+
+CI <- c(xbar + c(-1,1) * cz * sigma/sqrt(n))
+CI
+```
+
+CI is a 95 % confdence interval
+we are 95% confident in the method we used to construct te interval
+
+CI_i-alpha (mu) = [xbar - t_1-alpha/2;n-1 * s/sqrt(n), xbar + t_1-alpha/2;n-1 * s/sqrt(n)]
+t_1-alpha/2;n-1 = qt(.975, 4)
+
+
+
+# 04-08
+
+sample with replacement (often called a bootstrap sample)
+x_1*, x_2*, ..., x_n* = bold{x*}
+
+
+theta = parameter
+theta-hat = statistic
+
+theta-hat* is the bootstrapped distribution
+theta-hat* resembles the sampling distribution of theta-hat
+
+
+|E[New] - E[Old]|
+-----------------    <= 0.20  => Bioequivalence
+ E[Old] - E[Placebo]
+
+(With 95% confidence interval)
+
+
+
+For test:
+
+Bring code samples
+Distribution Sheet
+
+Over ch 4-5
+
+Last quiz is a good review for chapter 4

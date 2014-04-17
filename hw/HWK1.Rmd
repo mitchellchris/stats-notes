@@ -1,0 +1,299 @@
+# Homework Number 1
+## Names: Jon Johnson, Gabriel Triggs, Chris Mitchell
+
+```{r Systime, echo = FALSE, comment = NA}
+DT <- format(Sys.time(), "%A, %B %d, %Y - %X")
+```
+
+This work was last compiled on `r DT`.
+
+```{r label = setup, echo = FALSE, message = FALSE}
+options(width = 120)
+opts_chunk$set(comment = NA, fig.height = 5, fig.width =5, fig.align = 'center')
+library(ggplot2)
+library(lattice)
+```
+
+**Prob 1:** Access the data from URL 
+[http://www.stat.berkeley.edu/users/statlabs/data/babies.data](http://www.stat.berkeley.edu/users/statlabs/data/babies.data),
+and store the information in an object named `BABIES` using the function 
+`read.table()`. A description of the variables can be found at
+[http://www.stat.berkeley.edu/users/statlabs/labs.html](http://www.stat.berkeley.edu/users/statlabs/labs.html).  These data are a subset from a much larger study dealing with 
+child health and development.  Use the functions `summary()` and `dim()` on `BABIES`, and report the number of rows and columns of `BABIES`.
+
+```{r prob1}
+site <- "http://www.stat.berkeley.edu/users/statlabs/data/babies.data"
+BABIES <- read.table(file=url(site), header=TRUE)
+summary(BABIES)
+dim(BABIES)
+```
+
+> **Prob 1 answer:** There are **`r dim(BABIES)[1]`** rows and **`r dim(BABIES)[2]`** columns in BABIES.
+
+**Prob 2:** The variables `bwt`, `gestation`, `parity`, `age`, `height`, `weight`, and `smoke` use values of 999, 999, 9, 99, 99, 999, and 9, respectively, to denote ''unknown.''  `R` uses `NA` to denote a missing or unavailable value.  Re-code the missing values in `BABIES`.  Hint: use something similar to `BABIES$bwt[BABIES$bwt == 999] = NA`.  Run the functions `summary()` and `dim()` on your `BABIES` data frame.
+
+```{r prob2}
+BABIES$bwt[BABIES$bwt == 999] = NA
+BABIES$gestation[BABIES$gestation == 999] = NA
+BABIES$parity[BABIES$parity == 9] = NA
+BABIES$age[BABIES$age == 99] = NA
+BABIES$height[BABIES$height == 99] = NA
+BABIES$weight[BABIES$weight == 999] = NA
+BABIES$smoke[BABIES$smoke == 9] = NA
+summary(BABIES)
+dim(BABIES)
+```
+
+**Prob 3:** Use the function `na.omit()` to create a ''clean'' data set that removes subjects if any observations on the subject are ''unknown.''   Store the modified data frame in a data frame named `CLEAN`.  Run the function `dim()` on the data frame `CLEAN`.  
+
+
+```{r prob3}
+CLEAN <- na.omit(BABIES)
+dim(CLEAN)
+```
+
+**Prob 4:** How many missing values in the data frame `BABIES` are there for `gestation`, `age`, `height`, `weight`, and `smoke`, respectively?  How many rows of `BABIES` have no missing values, one missing value, two missing values, and three missing values, respectively?  Note: the number of rows in `CLEAN` should agree with your answer for the number of rows in `BABIES` that have no missing values.
+
+```{r prob4}
+colCounts <- as.vector(colSums(is.na(BABIES)))
+rowCounts <- as.vector(table(rowSums(is.na(BABIES))))
+```
+
+> **Prob 4 answer:** The missing values are as follows: **`r colCounts[2]`**, **`r colCounts[4]`**, **`r colCounts[5]`**, **`r colCounts[6]`**, **`r colCounts[7]`**. There are **`r rowCounts[1]`** rows with no missing values, **`r rowCounts[2]`** rows with 1 missing value, **`r rowCounts[3]`** rows with 2 missing values, and **`r rowCounts[4]`** rows with 3 missing values.
+
+
+**Prob 5:** Sort the values in `CLEAN` by `bwt`, `gestation`, and `age`.  Store the sorted values in a data frame named `BGA` and show the last six rows of `BGA`.
+
+```{r prob5}
+BGA = CLEAN[order(CLEAN$bwt, CLEAN$gestation, CLEAN$age),]
+tail(BGA)
+```
+
+**Prob 6:** Store the data frame `CLEAN` in your working directory as a `*.csv` file using the function `write.csv()` using the argument `row.names = FALSE`.
+Use the function `read.csv()` to read the file back in to your working directory and store
+the result in `NAELC`.  Show the first six rows of the data frame `NAELC`.  
+
+```{r prob6}
+write.csv(CLEAN, file="CLEAN.csv", row.names=FALSE)
+NAELC = read.csv("CLEAN.csv")
+head(NAELC)
+```
+
+**Prob 7:** What percent of the women in `CLEAN` are pregnant with their first child (`parity = 0`) and do not smoke?
+
+```{r prob7}
+percentWhatever <- 100 * nrow(subset(CLEAN, (parity == 0) & (smoke == 0))) / nrow(CLEAN)
+```
+
+> **Prob 7 answer:** **`r percentWhatever`%** of women are pregnant with their first child and do not smoke.
+
+**Prob 8:** Use the information in `CLEAN` to create a density histogram of the birth weights of babies whose mothers have never smoked (`smoke = 0`) and another histogram placed directly below the first in the same graphics device for the birth weights of babies whose mothers currently smoke (`smoke = 1`).  Make the range of the $x$-axis 50 to 180 (ounces) for both histograms.  Superimpose a density curve over each histogram, and label the $x$-axis "Weight in Ounces".  *Extra credit if you create the requested graph with the three graphic systems (base, lattice, and ggplot2).*
+
+```{r prob8a}
+nonsmokers <- subset(CLEAN, smoke == 0)$bwt
+smokers <- subset(CLEAN, smoke == 1)$bwt
+par(mfcol=c(2,1))
+hist(nonsmokers, xlim=range(50,180), freq=F, main="Nonsmoker Birth Weight", xlab="Weight in Ounces")
+lines(density(nonsmokers))
+hist(smokers, xlim=range(50,180), freq=F, main="Smoker Birth Weight", xlab="Weight in Ounces")
+lines(density(smokers))
+```
+
+```{r prob8b}
+
+```
+
+
+```{r, prob8c}
+
+```
+
+**Prob 9:** Based on the histograms, characterize the distribution of baby birth weight for both non-smoking and smoking mothers.
+
+```{r prob9}
+# Center 
+mean(smokers)
+mean(nonsmokers)
+#Spread
+sd(smokers)
+sd(nonsmokers)
+```
+
+> **Prob 9 answer:** Both smoker and non-smoker birthweights are non-skewed. Because of this, we use mean to show that smoker birthweights center at `r mean(smokers)` and that non-smoker birthweights center at `r median(nonsmokers)`. This lack of skew also leads us to use standard deviation to show spread, `r sd(smokers)` for smokers and `r sd(nonsmokers)` for nonsmokers.
+
+**Prob 10:** Create side-by-side boxplots to compare the birth weights of babies whose mother's never smoked and those who currently smoke.  Use base graphs (`boxplot()`), lattice graphs (`bwplot()`), and ggplot2 graphs to create the boxplots.  Label the $y$-axis "Weight in Ounces".
+
+```{r prob10a}
+par(mfcol=c(1,2))
+boxplot(nonsmokers)
+title(main="Nonsmoker Birth Weights", ylab="Weight in Ounces")
+boxplot(smokers)
+title(main="Smoker Birth Weights", ylab="Weight in Ounces")
+
+```
+
+```{r prob10b}
+plot1 <- bwplot(nonsmokers, main = "Nonsmoker Birth Weights", 
+                xlab = "Weight in Ounces")
+plot2 <- bwplot(smokers, main = "Smoker Birth Weights",
+                xlab = "Weight in Ounces")
+print(plot1, position = c(0, 0, 0.5, 1), more = TRUE)
+print(plot2, position = c(0.5, 0, 1, 1))
+```
+
+```{r prob10c}
+
+```
+
+**Prob 11:** What is the median weight difference between babies who are firstborn
+(`parity = 0`) and those who are not (`parity = 1`)?
+
+```{r prob11}
+parity0 <- subset(BABIES, parity == 0)
+parity1 <- subset(BABIES, parity == 1)
+weightFirst <- median(parity0$bwt)
+weightOther <- median(parity1$bwt)
+
+```
+
+> **Prob 11 answer:** The median weight difference between 
+babies who are firstborn and those who are not is **`r weightFirst - weightOther`** ounces.
+
+**Prob 12:** Create a single graph of the densities for pre-pregnancy `weight` for mothers who have never smoked and for mothers who currently smoke.  Make sure both densities appear in the same graph and have a legend.  Label the $x$-axis "Weight in Pounds".  *Extra credit if you create the requested graph using base, lattice, and ggplot2 graphics.*
+
+```{r prob12a}
+par(mfrow=c(1,1))
+nonsmokers <- density(subset(CLEAN, smoke == 0)$weight)
+smokers <- density(subset(CLEAN, smoke == 1)$weight)
+plot(range(nonsmokers$x, smokers$x), range(nonsmokers$y, smokers$y), type = "n", xlab = "Weight in Pounds", ylab="Density")
+lines(nonsmokers, col="tomato2")
+lines(smokers, col="purple")
+legend("topright", "(x, y)", c("nonsmokers", "smokers"), col=c("tomato2", "purple"), pch=19)
+```
+
+```{r prob12b}
+require(ggplot2)
+ggplot() + geom_density(aes(CLEAN$weight[CLEAN$smoke == 0]), fill = "skyblue") + geom_density(aes(CLEAN$weight[CLEAN$smoke == 1]), fill = "green",alpha=I(0.2)) + labs(x = "Weight in pounds",title = "Pre-pregnancy weight of smokers vs non-smokers")
+
+```
+
+```{r prob12c}
+
+```
+
+**Prob 13:** Characterize the pre-pregnancy distribution of `weight` for mothers who have never smoked and for mothers who currently smoke.
+
+```{r prob13}
+site <- "http://www.stat.berkeley.edu/users/statlabs/data/babies.data"
+BABIES <- read.table(file=url(site), header=TRUE)
+nonsmokersweight <- subset(BABIES, smoke == 0)$weight
+smokersweight <- subset(BABIES, smoke == 1)$weight
+#Center
+mean(nonsmokersweight)
+mean(smokersweight)
+#Spread
+sd(nonsmokersweight)
+sd(smokersweight)
+
+hist(smokersweight, xlab = "Weight (lbs.)",main = "Histogram of Pre-Pregnancy Smoker Weight")
+hist(nonsmokersweight, xlab = "Weight (lbs.)",main = "Histogram of Pre-Pregnancy Non-Smoker Weight")
+
+```
+
+> **Prob 13 answer:** As the above histograms show, the weight distribution between smokers and non-smokers is only slightly skewed.  This is evident through comparison of the median weight of smokers **`r median(smokersweight)`** lbs. and the mean weight of non-smokers **`r mean(nonsmokersweight)`** lbs.  The slight skew is reflected in the standard deviation of smokers and non-smokers respectively: **`r sd(smokersweight)`** and **`r sd(nonsmokersweight)`**. 
+
+**Prob 14:** What is the mean pre-pregnancy weight difference between mothers who do not smoke and those who do?  Can you think of any reasons not to use the mean as a measure of center to compare pre-pregnancy weights in this problem?
+
+```{r prob14}
+nonsmokersweight <- subset(BABIES, smoke == 0)$weight
+smokersweight <- subset(BABIES, smoke == 1)$weight
+ans <- mean(smokersweight)-mean(nonsmokersweight)
+
+```
+
+> **Prob 14 answer:** The mean pre-pregnancy weight difference between mothers who do not smoke and those who do is **`r mean(smokersweight)-mean(nonsmokersweight)`** pounds.
+
+
+**Prob15:** Compute the body mass index (`BMI`) for each mother in `CLEAN`.  Recall that `BMI` is defined as $\text{kg}/\text{m}^2$ (0.0254 m = 1 in., and 0.45359 kg = 1 lb.).  Add the variables weight in kg, height in m, and BMI to `CLEAN` and store the result in `CLEANP`.  Show the first six rows of `CLEANP`.
+
+```{r prob15}
+CLEANP<-CLEAN
+CLEANP$BMI<-CLEAN$weight*0.45359/(CLEAN$height*0.0254)^2
+head(CLEANP)
+```
+
+**Prob 16:** Characterize the distribution of BMI.  Create either a histogram or density plot to
+help determine the shape of the BMI distribution.  Label the $x$-axis "BMI ($kg/m^2$)".
+
+```{r prob16}
+# Shape
+hist(CLEANP$BMI, xlab="BMI(kg/m^2)", main="Distribution of BMI")
+# Center
+median(CLEANP$BMI)
+# Spread
+IQR(CLEANP$BMI)
+```
+
+> **Prob 16 answer:** As the above histogram shows, the distribution of BMI is right-skewed. Because of this, we use median to find that its center is `r median(CLEANP$BMI)` and IQR to find that its spread is `r IQR(CLEANP$BMI)`
+
+**Prob 17:** Group pregnant mothers according to their BMI quartile. Find the mean and standard deviation for baby birth weights in each quartile for mothers who have never smoked and those who currently smoke.   Find the median and IQR for baby birth weights in each quartile for mothers who have never smoked and those who currently smoke. Based on your answers, would you characterize birth weight in each group as relatively symmetric or skewed? Create histograms and densities of `bwt` conditioned on `BMI` quartiles and whether the mother smokes to verify your previous assertions about the shape.
+
+```{r prob17a}
+CLEANP$quart <- cut(CLEANP$BMI, breaks=quantile(CLEANP$BMI, c(0, .25, .5, .75, 1)), include.lowest=T)
+nonsmokers <- subset(CLEANP, smoke == 0)
+smokers <- subset(CLEANP, smoke == 1)
+nonsmokerStats = data.frame(mean=tapply(nonsmokers$bwt, nonsmokers$quart, mean), 
+                            sd=tapply(nonsmokers$bwt, nonsmokers$quart, sd),
+                            median=tapply(nonsmokers$bwt, nonsmokers$quart, median),
+                            IQR=tapply(nonsmokers$bwt, nonsmokers$quart, IQR))
+
+smokerStats = data.frame(mean=tapply(smokers$bwt, smokers$quart, mean), 
+                         sd=tapply(smokers$bwt, smokers$quart, sd),
+                         median=tapply(smokers$bwt, smokers$quart, median),
+                         IQR=tapply(smokers$bwt, smokers$quart, IQR))
+nonsmokerStats
+smokerStats
+```
+
+
+```{r prob17b}
+p <- ggplot(data=CLEANP, aes(x=bwt))
+p + geom_histogram() + facet_grid(smoke ~ quart)
+```
+
+```{r prob17c}
+p <- ggplot(data=CLEANP, aes(x=bwt))
+p + geom_density() + facet_grid(smoke ~ quart)
+```
+
+> **Prob 17 answer:**  The birth weight in each group is relatively symmetric.
+
+**Prob 18:** Create side-by-side boxplots of `bwt` based on whether the mother
+smokes conditioned on `BMI` quartiles.  What do you notice using the boxplots?
+
+```{r prob18}
+p <- ggplot(data=CLEANP, aes(x=0, y=bwt))
+p + geom_boxplot() + facet_grid(smoke ~ quart)
+```
+
+> **Prob 18 answer:** It appears that smoking is a larger factor for bwt than BMI.
+
+
+**Prob 19:** Does it appear that BMI is related to the birth weight of a baby? Create a scatterplot of birth weight (`bwt`) versus `BMI` while conditioning on BMI quartiles and whether the mother smokes to help answer the question.  Use `log(bwt)` on the $y$-axis instead of the untransformed `bwt`.
+
+```{r prob19, fig.width = 8, tidy = FALSE}
+p <- ggplot(data=CLEANP, aes(x=BMI, y=log(bwt)))
+p + geom_point() + facet_grid(smoke ~ quart)
+```
+
+> **Prob 19 answer:** Yes.
+
+
+**Prob 20:** Create a scatterplot of `bwt` versus `gestation` conditioned on BMI quartiles and whether the mother smokes using `ggplot2` graphics.  Fit curves to the data using `loess` and `lm` (`stat_smooth()`); and display the fitted curves in the scatterplots. What do you find interesting about the resulting graphs? 
+
+```{r prob20, fig.width = 8}
+p <- ggplot(data=CLEANP, aes(x=gestation, y=bwt))
+p + geom_point() + facet_grid(smoke ~ quart) + stat_smooth()
+```
+
+> **Prob 20 answer:**  They are heavily skewed.
