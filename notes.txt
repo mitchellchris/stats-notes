@@ -405,12 +405,31 @@ theta-hat* resembles the sampling distribution of theta-hat
 (With 95% confidence interval)
 
 
+X ~ N(mean, sd)
 
-For test:
+if you take a random sample of size n, the sampling distribution of the sample mean
+would be normal
 
-Bring code samples
-Distribution Sheet
+Xbar ~ N(mean_xbar, sd_xbar)
+mean_xbar = mean
+sd_xbar = sd / sqrt(n)
 
-Over ch 4-5
 
-Last quiz is a good review for chapter 4
+# Z score
+
+Z = (stat - mu_stat) / sd_stat
+
+Z = (xbar - mean) / (sd / sqrt(n)) = (xbar - mean_xbar) / sd_xbar
+
+CL = 1 - alpha
+.95 = 1 - alpha
+alpha = 0.05
+Z_1-alpha/2 = Z_1-.05/2
+= Z_.975
+qnorm(.975)
+
+CL = .99
+alpha = .01
+Z_.995 = qnorm(.995) = 2.58
+
+CI_1-alpha(mu) = [xbar - Z_1-alpha/2 * sigma/sqrt(n), xar + Z_1-alpha/2 * sigma/sqrt(n)]
